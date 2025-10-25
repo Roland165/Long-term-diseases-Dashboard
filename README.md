@@ -17,12 +17,12 @@ It’s designed for students, researchers, and healthcare professionals seeking 
 ## Try Now
 
 You can access the hosted version here:  
-**[ananana.fr](https://ananana.fr)**
+**[https://roland165-long-term-diseases.streamlit.app](https://roland165-long-term-diseases.streamlit.app)**
 
 Or run it locally :
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/french-health-storytelling.git
+git clone https://github.com/Roland165/Long-term-diseases-Dashboard
 cd french-health-storytelling
 pip install -r requirements.txt
 then download the dataset from https://www.data.gouv.fr/datasets/pathologies-effectif-de-patients-par-pathologie-sexe-classe-dage-et-territoire-departement-region/community-resources
