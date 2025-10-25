@@ -1,0 +1,31 @@
+{
+  "checks": {
+    "rows": 946224,
+    "cols": 11
+  },
+  "summary": {
+    "rows": 946224,
+    "cols": 11,
+    "annees": [
+      2021,
+      2022,
+      2023
+    ],
+    "regions": 19,
+    "has_weight": true,
+    "has_sex": true,
+    "cols_list": [
+      "annee",
+      "patho_niv1",
+      "patho_niv2",
+      "patho_niv3",
+      "cla_age_5",
+      "sexe",
+      "region",
+      "dept",
+      "ntop",
+      "npop",
+      "prev"
+    ]
+  }
+}
