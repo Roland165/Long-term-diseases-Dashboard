@@ -26,7 +26,7 @@ git clone https://github.com/yourusername/french-health-storytelling.git
 cd french-health-storytelling
 pip install -r requirements.txt
 streamlit run app.py
-
+```
 ---
 
 ## Features
