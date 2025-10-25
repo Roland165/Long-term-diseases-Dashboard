@@ -41,6 +41,8 @@ streamlit run app.py
 ---
 
 Project Structure
+
+```
 project/
 │
 ├── app.py                     # Main Streamlit entry point
@@ -59,3 +61,4 @@ project/
 │   └── viz.py                 # Helper functions for reusable Plotly visualizations and styling
 │
 └── requirements.txt           # Dependencies
+```
