@@ -37,7 +37,7 @@ def _categorize(df: pd.DataFrame, cols: list[str]) -> pd.DataFrame:
     return df
 
 
-# ---------- Chemin "CLEAN" : effectifs_cleaned.csv ----------
+# effectifs_cleaned.csv
 def coerce_cleaned(df: pd.DataFrame) -> pd.DataFrame:
     df = harmonize_columns(df)
 
@@ -51,7 +51,7 @@ def coerce_cleaned(df: pd.DataFrame) -> pd.DataFrame:
         if col in df.columns:
             df[col] = df[col].astype("string").str.strip()
 
-    # 🔧 normalise dept sur 3 chiffres (évite '99' vs '099')
+    # normalise dept sur 3 chiffres (évite '99' vs '099')
     if "dept" in df.columns:
         df["dept"] = df["dept"].astype("string").str.strip().str.zfill(3)
 
@@ -68,7 +68,7 @@ def coerce_cleaned(df: pd.DataFrame) -> pd.DataFrame:
     df = _categorize(df, ["region","dept","top","cla_age_5","patho_niv1","patho_niv2","patho_niv3","libelle_classe_age","libelle_sexe"])
     return df
 
-# ---------- Chemin "RAW" : effectifs.csv ----------
+# effectifs.csv
 def clean_raw(df: pd.DataFrame) -> pd.DataFrame:
     df = harmonize_columns(df)
 
@@ -82,7 +82,7 @@ def clean_raw(df: pd.DataFrame) -> pd.DataFrame:
         if col in df.columns:
             df[col] = df[col].astype("string").str.strip()
 
-    # 🔧 normalise dept sur 3 chiffres (évite '99' vs '099')
+    # normalise dept sur 3 chiffres (évite '99' vs '099')
     if "dept" in df.columns:
         df["dept"] = df["dept"].astype("string").str.strip().str.zfill(3)
 
@@ -120,12 +120,6 @@ def _ensure_year(series: pd.Series) -> pd.Series:
     return pd.to_numeric(series, errors="coerce").astype("Int64")
 
 def _filter_population_scope(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Keep rows usable for union-of-npop at (dept, age-bin) grain.
-    - keep ALL departments (incl. '975','977',...),
-    - drop ONLY aggregates dept=='999',
-    - keep ONLY true 5-year age bins (drop 'All ages'/'Tous âges'/NaN).
-    """
     out = df.copy()
     if "annee" in out.columns:
         out["annee"] = _ensure_year(out["annee"])
@@ -138,10 +132,7 @@ def _filter_population_scope(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 def _dedup_npop_per_slice(tmp: pd.DataFrame, method: str = "median") -> pd.Series:
-    """
-    Deduplicate npop within each (dept, cla_age_5) slice ignoring pathology and sex.
-    method ∈ {'median','min','max','first'}.
-    """
+
     tmp = tmp.copy()
     agg = {"median": "median", "min": "min", "max": "max", "first": "first"}[method]
     if "cla_age_5" in tmp.columns:
@@ -150,12 +141,6 @@ def _dedup_npop_per_slice(tmp: pd.DataFrame, method: str = "median") -> pd.Serie
         return tmp.groupby(["dept"], observed=False)["npop"].agg(agg)
 
 def population_union_for_year(df: pd.DataFrame, year: int, method: str = "median") -> float:
-    """
-    Union of npop for a given year: one value per (dept, age-bin), ignoring sex/pathologies.
-    - keeps exotic departments,
-    - excludes only dept=='999',
-    - deduplicates within slice using `method` (default 'median').
-    """
     required = {"annee", "dept", "npop"}
     if not required.issubset(df.columns):
         return float("nan")
@@ -172,10 +157,6 @@ def population_union_for_year(df: pd.DataFrame, year: int, method: str = "median
     return float(dedup.sum())
 
 def population_union_by_year(df: pd.DataFrame, method: str = "median") -> pd.DataFrame:
-    """
-    Time series of union-of-npop per year (one value per (dept, age-bin), ignoring sex/pathologies).
-    Keeps exotic departments; excludes only dept=='999'.
-    """
     required = {"annee", "dept", "npop"}
     if not required.issubset(df.columns):
         return pd.DataFrame(columns=["annee", "npop_union"])
@@ -202,10 +183,6 @@ def population_union_by_year(df: pd.DataFrame, method: str = "median") -> pd.Dat
     return out
 
 def population_union_audit(df: pd.DataFrame, year: int) -> dict:
-    """
-    Audit: how many (dept, age-bin) slices have >1 distinct npop values in that year
-    (i.e., duplicated across pathology/sex). Helps decide if you want 'median' vs 'min'.
-    """
     required = {"annee", "dept", "npop"}
     if not required.issubset(df.columns):
         return {"slices": 0, "multi_values": 0}
@@ -229,8 +206,7 @@ def population_union_audit(df: pd.DataFrame, year: int) -> dict:
     return {"slices": int(len(counts)), "multi_values": multi}
 
 
-# ---------- Tables pour les visuels ----------
-# ---------- Tables pour les visuels ----------
+# tables for viz
 def make_tables(df: pd.DataFrame) -> dict:
     out = {}
 
@@ -290,7 +266,6 @@ def make_tables(df: pd.DataFrame) -> dict:
     regions_n = int(df["region"].dropna().nunique()) if "region" in df.columns else 0
     depts_n   = int(df["dept"].dropna().nunique()) if "dept" in df.columns else 0
 
-    # ✅ Use the new helper (2023 union of npop) instead of the old _population_union
     try:
         pop_union_2023 = population_union_for_year(df, 2023, method="median")
     except Exception:

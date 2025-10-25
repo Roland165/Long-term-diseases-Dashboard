@@ -1,5 +1,3 @@
-# utils/io.py — lecture flexible + enregistrement du rapport
-# utils/io.py
 from pathlib import Path
 import pandas as pd
 
@@ -9,10 +7,7 @@ def sniff_sep(sample: str) -> str:
     return ","
 
 def read_csv_flexible(path_or_buf) -> pd.DataFrame:
-    """
-    Lecture CSV rapide avec détection du séparateur (';' ou ',').
-    Utilise pyarrow si dispo, sinon fallback python.
-    """
+
     import io
 
     # Détecte le séparateur
@@ -22,7 +17,7 @@ def read_csv_flexible(path_or_buf) -> pd.DataFrame:
         return ","
 
     try:
-        import pyarrow  # on teste simplement sa présence
+        import pyarrow
         engine = "pyarrow"
     except ImportError:
         engine = "python"
@@ -41,7 +36,7 @@ def read_csv_flexible(path_or_buf) -> pd.DataFrame:
             engine=engine,
         )
     else:
-        # bytes upload (rare ici)
+        # bytes upload 
         head = path_or_buf[:4096].decode("utf-8", errors="ignore")
         sep = sniff_sep(head)
         return pd.read_csv(

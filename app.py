@@ -15,7 +15,7 @@ from sections import intro, overview, deep_dives, conclusions
 from sections import map_section  # optional map section
 
 # config Streamlit page
-st.set_page_config(page_title="EFREI Data Storytelling", layout="wide")
+st.set_page_config(page_title="Long-term diseases Dashboard", layout="wide")
 
 # Data source (code-configured)
 USE_CLEANED = True  # True => effectifs_cleaned.csv ; False => effectifs.csv

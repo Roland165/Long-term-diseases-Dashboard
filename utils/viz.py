@@ -1,4 +1,3 @@
-# utils/viz.py
 import plotly.express as px
 
 def line_timeseries(df):

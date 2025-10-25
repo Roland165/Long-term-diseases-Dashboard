@@ -25,6 +25,13 @@ Or run it locally :
 git clone https://github.com/yourusername/french-health-storytelling.git
 cd french-health-storytelling
 pip install -r requirements.txt
+then download the dataset from https://www.data.gouv.fr/datasets/pathologies-effectif-de-patients-par-pathologie-sexe-classe-dage-et-territoire-departement-region/community-resources
+place your csv file in data/
+if you want a faster application
+    run the Project_jupyter.ipynb 
+else
+    in the app.py file, change USE_CLEANED = True to False
+
 streamlit run app.py
 ```
 ---
